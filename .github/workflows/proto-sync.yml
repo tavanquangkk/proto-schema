@@ -25,7 +25,7 @@ jobs:
             - name: Build & publish Java proto
               run: ./gradlew publish
               env:
-                  GITHUB_TOKEN: ${{ secrets.A_GITHUB_TOKEN }}
+                  GITHUB_TOKEN: ${{ secrets.DART_REPO_TOKEN }}
 
     dart:
         needs: java
