@@ -1,11 +1,9 @@
 syntax = "proto3";
 
-package master;
+package slip;
 
-option java_package = "com.example.proto.master";
-option java_outer_classname = "UserProto";
+import "proto/master/user.proto";
 
-message User {
-  int64 id = 1;
-  string name = 2;
+message Slip {
+  master.User user = 1;
 }
