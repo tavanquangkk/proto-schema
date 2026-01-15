@@ -44,7 +44,7 @@ jobs:
 
             - name: Push Dart code to Repo B
               run: |
-                  git clone https://tavanquangkk:${{ secrets.DART_REPO_TOKEN }}@github.com/tavanquangkk/dart-proto-lib.git
+                  git clone https://github.com/tavanquangkk/dart-proto-lib.git
                   rm -rf dart-proto-lib/lib/*
                   cp -r out/dart/* dart-proto-lib/lib/
 
@@ -52,6 +52,7 @@ jobs:
                   git config user.email "ci@github.com"
                   git config user.name "github-actions"
 
+                  git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/tavanquangkk/dart-proto-lib.git
                   git add .
                   git commit -m "auto: update proto [skip ci]" || echo "no change"
                   git push
