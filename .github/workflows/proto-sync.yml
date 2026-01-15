@@ -44,7 +44,7 @@ jobs:
 
             - name: Push Dart code to Repo B
               run: |
-                  git clone https://x-access-token:${{ secrets.DART_REPO_TOKEN }}@github.com/tavanquangkk/dart-proto-lib.git
+                  git clone https://tavanquangkk:${{ secrets.DART_REPO_TOKEN }}@github.com/tavanquangkk/dart-proto-lib.git
                   rm -rf dart-proto-lib/lib/*
                   cp -r out/dart/* dart-proto-lib/lib/
 
