@@ -6,8 +6,10 @@ rm -rf $OUT
 mkdir -p $OUT
 
 protoc \
+  --proto_path=proto \
   --dart_out=grpc:$OUT \
   proto/**/*.proto
+
 
 # Tạo file index theo folder
 for dir in $OUT/*; do

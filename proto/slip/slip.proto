@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package slip;
 
-import "proto/master/user.proto";
+import "master/user.proto";
 
 message Slip {
   master.User user = 1;

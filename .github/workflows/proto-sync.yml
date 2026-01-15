@@ -1,5 +1,8 @@
 name: Proto Sync
 
+permissions:
+    contents: read
+    packages: write
 on:
     push:
         paths:
