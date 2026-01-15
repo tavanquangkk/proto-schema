@@ -1,0 +1,41 @@
+name: Proto Sync
+
+on:
+    push:
+        paths:
+            - "proto/**"
+
+jobs:
+    java:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: actions/setup-java@v4
+              with:
+                  java-version: "17"
+                  distribution: "temurin"
+
+            - run: ./gradlew publish
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    dart:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: dart-lang/setup-dart@v1
+            - run: dart pub global activate protoc_plugin
+            - run: sudo apt-get install -y protobuf-compiler
+
+            - run: bash scripts/gen_dart.sh
+
+            - name: Push to Dart Repo
+              run: |
+                  git clone https://x-access-token:${{ secrets.DART_REPO_TOKEN }}@github.com/YOUR_GITHUB/dart-proto-lib.git
+                  cp -r out/dart/* dart-proto-lib/lib/
+                  cd dart-proto-lib
+                  git add .
+                  git commit -m "auto: update proto [skip ci]"
+                  git push
