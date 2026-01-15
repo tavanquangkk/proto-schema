@@ -8,6 +8,7 @@ on:
     push:
         paths:
             - "proto/**"
+    workflow_dispatch: # Cho phép bấm chạy thủ công để test
 
 jobs:
     java:
@@ -18,7 +19,8 @@ jobs:
             - uses: actions/setup-java@v4
               with:
                   java-version: "17"
-                  distribution: temurin
+                  distribution: "temurin"
+                  cache: "gradle"
 
             - name: Build & publish Java proto
               run: ./gradlew publish
@@ -33,26 +35,41 @@ jobs:
 
             - uses: dart-lang/setup-dart@v1
 
-            - name: Install protoc
+            - name: Install protoc and plugin
               run: |
-                  dart pub global activate protoc_plugin
                   sudo apt-get update
                   sudo apt-get install -y protobuf-compiler
+                  dart pub global activate protoc_plugin
+                  # Quan trọng: Thêm path để hệ thống tìm thấy protoc-gen-dart
+                  echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
 
             - name: Generate Dart code
-              run: bash scripts/gen_dart.sh
+              run: |
+                  chmod +x scripts/gen_dart.sh
+                  bash scripts/gen_dart.sh
 
             - name: Push Dart code to Repo B
+              env:
+                  PAT_TOKEN: ${{ secrets.DART_REPO_TOKEN }}
               run: |
-                  git clone https://github.com/tavanquangkk/dart-proto-lib.git
-                  rm -rf dart-proto-lib/lib/*
-                  cp -r out/dart/* dart-proto-lib/lib/
+                  # 1. Clone repo đích vào thư mục tạm
+                  git clone https://x-access-token:${PAT_TOKEN}@github.com/tavanquangkk/dart-proto-lib.git target-repo
 
-                  cd dart-proto-lib
+                  # 2. Xóa trắng lib cũ và copy code mới từ out/dart vào target-repo/lib
+                  rm -rf target-repo/lib/*
+                  mkdir -p target-repo/lib
+                  cp -r out/dart/* target-repo/lib/
+
+                  # 3. Commit và Push
+                  cd target-repo
                   git config user.email "ci@github.com"
                   git config user.name "github-actions"
 
-                  git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/tavanquangkk/dart-proto-lib.git
                   git add .
-                  git commit -m "auto: update proto [skip ci]" || echo "no change"
-                  git push
+                  # Kiểm tra nếu có thay đổi thì mới commit
+                  if git diff-index --quiet HEAD; then
+                    echo "No changes to commit"
+                  else
+                    git commit -m "auto: update proto from source [skip ci]"
+                    git push origin main
+                  fi
