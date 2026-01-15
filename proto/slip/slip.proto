@@ -1,6 +1,8 @@
 syntax = "proto3";
 
 package slip;
+option java_package = "com.example.proto.slip";
+option java_outer_classname = "SlipProto";
 
 import "master/user.proto";
 
