@@ -1,8 +1,8 @@
 syntax = "proto3";
-
 package master;
 
-option java_package = "com.example.proto.master";
+// Sửa lại cho khớp với group ở build.gradle
+option java_package = "com.tavanquangkk.proto.master";
 option java_outer_classname = "UserProto";
 
 message User {

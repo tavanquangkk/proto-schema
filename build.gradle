@@ -4,8 +4,9 @@ plugins {
     id 'com.google.protobuf' version '0.9.4'
 }
 
-group = 'com.yourcompany.proto'
-version = '1.0.0'
+// Nên đổi group cho khớp với package trong proto
+group = 'com.tavanquangkk.proto' 
+version = "1.0.${System.getenv('GITHUB_RUN_NUMBER') ?: '1'}"
 
 repositories {
     mavenCentral()
@@ -13,6 +14,18 @@ repositories {
 
 dependencies {
     implementation 'com.google.protobuf:protobuf-java:3.25.1'
+}
+
+// QUAN TRỌNG: Chỉ định nơi chứa file proto
+sourceSets {
+    main {
+        proto {
+            srcDir 'proto'
+        }
+        java {
+            srcDirs 'build/generated/source/proto/main/java'
+        }
+    }
 }
 
 protobuf {
@@ -35,7 +48,6 @@ publishing {
             artifactId = "proto-java"
         }
     }
-
     repositories {
         maven {
             name = "GitHubPackages"
