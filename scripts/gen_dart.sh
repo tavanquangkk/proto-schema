@@ -8,7 +8,7 @@ mkdir -p $OUT
 protoc \
   --proto_path=proto \
   --dart_out=grpc:$OUT \
-  proto/**/*.proto
+  proto/master/*.proto proto/slip/*.proto
 
 
 # Tạo file index theo folder
