@@ -33,7 +33,7 @@ jobs:
 
             - name: Push to Dart Repo
               run: |
-                  git clone https://x-access-token:${{ secrets.DART_REPO_TOKEN }}@github.com/YOUR_GITHUB/dart-proto-lib.git
+                  git clone https://x-access-token:${{ secrets.DART_REPO_TOKEN }}git@github.com:tavanquangkk/dart-proto-lib.git
                   cp -r out/dart/* dart-proto-lib/lib/
                   cd dart-proto-lib
                   git add .
