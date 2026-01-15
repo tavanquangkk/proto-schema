@@ -6,19 +6,16 @@ rm -rf $OUT
 mkdir -p $OUT
 
 protoc \
-  --proto_path=proto \
+  -I proto \
   --dart_out=grpc:$OUT \
-  proto/master/*.proto proto/slip/*.proto
+  proto/master/*.proto \
+  proto/slip/*.proto
 
-
-# Tạo file index theo folder
 for dir in $OUT/*; do
-  if [ -d "$dir" ]; then
-    name=$(basename "$dir")
-    echo "// auto-generated" > $OUT/$name.dart
-    for f in $dir/*.pb.dart; do
-      base=$(basename "$f")
-      echo "export '$name/$base';" >> $OUT/$name.dart
-    done
-  fi
+  [ -d "$dir" ] || continue
+  name=$(basename "$dir")
+  echo "// auto-generated" > $OUT/$name.dart
+  for f in $dir/*.pb.dart; do
+    echo "export '$name/$(basename "$f")';" >> $OUT/$name.dart
+  done
 done
